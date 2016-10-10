@@ -1,9 +1,12 @@
 package ru.rpg.deusexmobila;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.v7.app.NotificationCompat;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -23,8 +26,24 @@ public class WebAppInterface {
     }
 
     @JavascriptInterface
-    public void showNotification(String message) {
-        // TODO
+    public void showNotification(int id, String title, String text, boolean canRemove) {
+        Notification notification = new NotificationCompat.Builder(mActivity)
+                .setSmallIcon(android.R.drawable.sym_action_email)
+                .setContentTitle(title)
+                .setContentText(text)
+                .build();
+        if (!canRemove)
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+        NotificationManager notificationManager =
+                (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(id, notification);
+    }
+
+    @JavascriptInterface
+    public void cancelNotification(int id) {
+        NotificationManager notificationManager =
+                (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(id);
     }
 
     @JavascriptInterface
